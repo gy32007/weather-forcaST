@@ -1,3 +1,7 @@
+
+
+
+
 <!DOCTYPE html>
 <html ng-app="weatherApp">
 <head>
@@ -7,18 +11,16 @@
   <link rel="stylesheet" href="style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
   <script src="app.js"></script>
-</head>
+</head> 
 <body ng-controller="MainController">
  <div class="container" ng-class="{'center-layout': !currentWeather, 'top-layout': currentWeather}">
   <h2 class="text-center">🌤 Weather Forecast Application</h2>
-
   <!-- City Search -->
   <form ng-submit="searchCity()" class="form-inline text-center">
     <input type="text" ng-model="city" class="form-control" placeholder="Enter city name" required>
     <button type="submit" class="btn btn-primary">Search</button>
   </form>
 </div>
-
     <!-- Error Message -->
     <div class="alert alert-danger" ng-if="errorMessage">{{errorMessage}}</div>
     <!-- Current Weather -->
@@ -34,16 +36,18 @@
     </div>
     <!-- 5-Day Forecast -->
     <div ng-if="forecast.list" class="weather-card">
-      <h3>5-Day Forecast</h3>
-      <div class="row">
-        <div class="col-sm-2 forecast-day" ng-repeat="day in forecast.list | limitTo:5">
-          <p><strong>{{ day.dt * 1000 | date:'EEEE' }}</strong></p>
-          <p>{{ convertTemp(day.main.temp) }}°{{ unit }}</p>
-          <p>{{ day.weather[0].main }}</p>
-          <p>{{ day.dt * 1000 | date:'hh:mm a' }}</p>
+      <!-- 5-Day Forecast -->
+    <div ng-if="dailyForecast.length > 0" class="weather-card">
+    <h3>5-Day Forecast</h3>
+    <div class="row">
+        <div class="col-sm-2 forecast-day" ng-repeat="day in dailyForecast">
+        <p><strong>{{ day.date | date:'EEEE' }}</strong></p>
+        <p>{{ convertTemp(day.temp) }}°{{ unit }}</p>
+        <p>{{ day.condition }}</p>
         </div>
-      </div>
     </div>
+    </div>
+
     <br>
     <!-- Favorites -->
     <div ng-if="favorites.length > 0" class="weather-card">
@@ -53,10 +57,10 @@
       </ul>
     </div>
     <!-- Unit Toggle -->
+     <br>
 <div class="text-center" ng-if="currentWeather">
   <button class="btn btn-info" ng-click="toggleUnit()">Toggle °C/°F</button>
 </div>
-
   </div>
 </body>
 </html>
