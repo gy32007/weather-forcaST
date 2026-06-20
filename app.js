@@ -1,3 +1,7 @@
+
+
+
+
 var app = angular.module('weatherApp', []);
 
 app.controller('MainController', function($scope, $http) {
@@ -26,6 +30,34 @@ app.controller('MainController', function($scope, $http) {
     }, function() {
       $scope.errorMessage = "Forecast data unavailable.";
     });
+    $http.get(urlForecast).then(function(response) {
+  $scope.forecast = response.data;
+
+  // Build daily forecast array
+  $scope.dailyForecast = [];
+  if ($scope.forecast && $scope.forecast.list) {
+    let grouped = {};
+
+    $scope.forecast.list.forEach(item => {
+      let date = new Date(item.dt * 1000);
+      let dayKey = date.toDateString();
+
+      if (!grouped[dayKey]) {
+        grouped[dayKey] = {
+          date: date,
+          temp: item.main.temp,
+          condition: item.weather[0].main
+        };
+      }
+    });
+
+    // Take only 5 days
+    $scope.dailyForecast = Object.values(grouped).slice(0, 5);
+  }
+}, function() {
+  $scope.errorMessage = "Forecast data unavailable.";
+});
+
   };
 
   $scope.convertTemp = function(temp) {
@@ -43,3 +75,4 @@ app.controller('MainController', function($scope, $http) {
     localStorage.setItem('favorites', JSON.stringify($scope.favorites));
   };
 });
+
