@@ -1,68 +1,66 @@
-body {
-  background-color: #f0f8ff;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-}
 
-.weather-card {
-  background: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px;
-  margin-top: 20px;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
 
-/* Hover effect for cards */
-.weather-card:hover {
-  transform: scale(1.02);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
 
-.favorite {
-  color: orange;
-  cursor: pointer;
-  transition: color 0.3s;
-}
 
-/* Hover effect for favorite star */
-.favorite:hover {
-  color: red;
-}
+<!DOCTYPE html>
+<html ng-app="weatherApp">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather Forecast Application</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="app.js"></script>
+</head> 
+<body ng-controller="MainController">
+ <div class="container" ng-class="{'center-layout': !currentWeather, 'top-layout': currentWeather}">
+  <h2 class="text-center">🌤 Weather Forecast Application</h2>
+  <!-- City Search -->
+  <form ng-submit="searchCity()" class="form-inline text-center">
+    <input type="text" ng-model="city" class="form-control" placeholder="Enter city name" required>
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+</div>
+    <!-- Error Message -->
+    <div class="alert alert-danger" ng-if="errorMessage">{{errorMessage}}</div>
+    <!-- Current Weather -->
+    <div ng-if="currentWeather" class="weather-card">
+      <h3>{{currentWeather.name}} (Current Weather)</h3>
+      <p><strong>Temperature:</strong> {{convertTemp(currentWeather.main.temp)}}°{{unit}}</p>
+      <p><strong>Condition:</strong> {{currentWeather.weather[0].description}}</p>
+      <p><strong>Humidity:</strong> {{currentWeather.main.humidity}}%</p>
+      <p><strong>Wind:</strong> {{currentWeather.wind.speed}} m/s</p>
+      <p><strong>Pressure:</strong> {{currentWeather.main.pressure}} hPa</p>
+      <p><strong>Last Updated:</strong> {{lastUpdated | date:'MMM d, y hh:mm a'}}</p>
+      <span ng-click="toggleFavorite(currentWeather.name)" class="favorite">★ Add to Favorites</span>
+    </div>
+    <!-- 5-Day Forecast -->
+    <div ng-if="forecast.list" class="weather-card">
+      <!-- 5-Day Forecast -->
+    <div ng-if="dailyForecast.length > 0" class="weather-card">
+    <h3>5-Day Forecast</h3>
+    <div class="row">
+        <div class="col-sm-2 forecast-day" ng-repeat="day in dailyForecast">
+        <p><strong>{{ day.date | date:'EEEE' }}</strong></p>
+        <p>{{ convertTemp(day.temp) }}°{{ unit }}</p>
+        <p>{{ day.condition }}</p>
+        </div>
+    </div>
+    </div>
 
-.forecast-day {
-  text-align: center;
-  border-right: 1px solid #ddd;
-  padding: 10px;
-  transition: background-color 0.3s;
-}
-
-/* Hover effect for forecast blocks */
-.forecast-day:hover {
-  background-color: #e6f7ff;
-}
-
-.forecast-day:last-child {
-  border-right: none;
-}
-
-/* Button hover */
-.btn-info:hover, .btn-primary:hover {
-  background-color: #0056b3;
-  color: #fff;
-}
-/* Centered layout for intro */
-.center-layout {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 80vh; /* vertically center */
-  transition: all 0.6s ease;
-}
-
-/* Top layout after search */
-.top-layout {
-  margin-top: 20px;
-  transition: all 0.6s ease;
-}
+    <br>
+    <!-- Favorites -->
+    <div ng-if="favorites.length > 0" class="weather-card">
+      <h3>Favorite Locations</h3>
+      <ul>
+        <li ng-repeat="fav in favorites">{{fav}}</li>
+      </ul>
+    </div>
+    <!-- Unit Toggle -->
+     <br>
+<div class="text-center" ng-if="currentWeather">
+  <button class="btn btn-info" ng-click="toggleUnit()">Toggle °C/°F</button>
+</div>
+  </div>
+</body>
+</html>
